@@ -1,8 +1,8 @@
-from unittest import skip  # Даёт возможность пропускать тесты
+# from unittest import skip  # Даёт возможность пропускать тесты
 
-from django.http import HttpRequest
 from django.contrib.auth.models import User
-from django.test import Client, TestCase, RequestFactory
+from django.http import HttpRequest
+from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 
 from store.models import Category, Product
@@ -13,6 +13,7 @@ from store.views import all_products
 #     def test_skip_exmaple(self):
 #         pass
 
+
 class TestViewResponse(TestCase):
 
     def setUp(self):
@@ -20,10 +21,10 @@ class TestViewResponse(TestCase):
         self.factory = RequestFactory()
         Category.objects.create(name='django', slug='django')
         User.objects.create(username='admin')
-        Product.objects.create(category_id=1, title='django beginners', created_by_id=1,
-                                             slug='django-beginners', price='20.00', image='gjango')
+        Product.objects.create(
+            category_id=1, title='django beginners', created_by_id=1,
+            slug='django-beginners', price='20.00', image='gjango')
 
-    
     def test_url_allowed_host(self):
         """
         Тест разрешенного хоста
@@ -35,7 +36,8 @@ class TestViewResponse(TestCase):
         """
         Тестирование URL модели Product
         """
-        response = self.c.get(reverse('store:product_detail', args=['django-beginners']))
+        response = self.c.get(reverse(
+            'store:product_detail', args=['django-beginners']))
         self.assertEqual(response.status_code, 200)
 
     def test_category_detail_url(self):
@@ -55,7 +57,7 @@ class TestViewResponse(TestCase):
         self.assertIn('<title>Home</title>', html)
         self.assertTrue(html.startswith('\n<!DOCTYPE html>\n'))
         self.assertEqual(response.status_code, 200)
-    
+
     def test_view_function(self):
         """
         Пример: Использование RequestFactory

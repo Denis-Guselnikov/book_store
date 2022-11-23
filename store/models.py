@@ -1,6 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.urls import reverse
+
 
 class Category(models.Model):
     name = models.CharField(max_length=255, db_index=True)
@@ -17,8 +18,10 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='product')
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_creater')    
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name='product')
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='product_creater')
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255, default='admin')
     description = models.TextField(blank=True)
@@ -35,7 +38,7 @@ class Product(models.Model):
         ordering = ('-created',)
 
     def get_absolute_url(self):
-        return reverse('store:product_detail', args=[self.slug])    
+        return reverse('store:product_detail', args=[self.slug])
 
     def __str__(self):
         return self.title
