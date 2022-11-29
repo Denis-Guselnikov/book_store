@@ -1,17 +1,10 @@
-# from unittest import skip  # Даёт возможность пропускать тесты
-
 from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 
 from store.models import Category, Product
-from store.views import all_products
-
-# @skip("demonstrating skipping")
-# class TestSkip(TestCase):
-#     def test_skip_exmaple(self):
-#         pass
+from store.views import products_all
 
 
 class TestViewResponse(TestCase):
@@ -31,6 +24,8 @@ class TestViewResponse(TestCase):
         """
         response = self.c.get('/')
         self.assertEqual(response.status_code, 200)
+        response = self.c.get('/', HTTP_HOST='noaddress.com')
+        self.assertEqual(response.status_code, 400)
 
     def test_product_detail_url(self):
         """
@@ -52,9 +47,9 @@ class TestViewResponse(TestCase):
         Тестирования шаблона home
         """
         request = HttpRequest()
-        response = all_products(request)
+        response = products_all(request)
         html = response.content.decode('utf8')
-        self.assertIn('<title>Home</title>', html)
+        self.assertIn('<title>BookStore</title>', html)
         self.assertTrue(html.startswith('\n<!DOCTYPE html>\n'))
         self.assertEqual(response.status_code, 200)
 
@@ -63,8 +58,8 @@ class TestViewResponse(TestCase):
         Пример: Использование RequestFactory
         """
         request = self.factory.get('/item/django-beginners')
-        response = all_products(request)
+        response = products_all(request)
         html = response.content.decode('utf8')
-        self.assertIn('<title>Home</title>', html)
+        self.assertIn('<title>BookStore</title>', html)
         self.assertTrue(html.startswith('\n<!DOCTYPE html>\n'))
         self.assertEqual(response.status_code, 200)
