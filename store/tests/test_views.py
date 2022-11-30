@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from django.http import HttpRequest
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
+from django.conf import settings
+from importlib import import_module
 
 from store.models import Category, Product
 from store.views import products_all
@@ -11,7 +13,6 @@ class TestViewResponse(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.factory = RequestFactory()
         Category.objects.create(name='django', slug='django')
         User.objects.create(username='admin')
         Product.objects.create(
@@ -47,17 +48,8 @@ class TestViewResponse(TestCase):
         Тестирования шаблона home
         """
         request = HttpRequest()
-        response = products_all(request)
-        html = response.content.decode('utf8')
-        self.assertIn('<title>BookStore</title>', html)
-        self.assertTrue(html.startswith('\n<!DOCTYPE html>\n'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_view_function(self):
-        """
-        Пример: Использование RequestFactory
-        """
-        request = self.factory.get('/item/django-beginners')
+        engine = import_module(settings.SESSION_ENGINE)
+        request.session = engine.SessionStore()
         response = products_all(request)
         html = response.content.decode('utf8')
         self.assertIn('<title>BookStore</title>', html)
