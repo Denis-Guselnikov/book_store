@@ -19,6 +19,8 @@ sqlparse = "==0.4.1"
 testfixtures = "==6.17.1"
 toml = "==0.10.2"
 python-dotenv = "*"
+django-countries = "==7.5"
+six = "*"
 
 [dev-packages]
 flake8 = "*"
